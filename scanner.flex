@@ -101,6 +101,7 @@ real    { return REAL_TYPE; }
 
 
 write { return WRITE; }
+read { return READ; }
 
 
 

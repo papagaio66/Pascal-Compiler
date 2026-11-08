@@ -8,6 +8,7 @@
 %token INTEGER_TYPE REAL_TYPE
 
 %token WRITE
+%token READ
 
 
 %token PROGRAM VAR COLON DOT
@@ -257,6 +258,9 @@ cmd:
   }
 | WRITE LPAREN expr RPAREN {
     $$ = ast_write($3);
+}
+| READ LPAREN ID RPAREN {
+    $$ = ast_read($3);
 }
 ;
 

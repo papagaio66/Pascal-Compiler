@@ -133,3 +133,9 @@ Cmd* ast_write(Expr* value) {
     node->attr.write.value = value;
     return node;
 }
+Cmd* ast_read(char* var) {
+    Cmd* node = malloc(sizeof(Cmd));
+    node->kind = C_READ;
+    node->attr.read.var = strdup(var);
+    return node;
+}
