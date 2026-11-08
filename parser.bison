@@ -20,6 +20,7 @@
 %nonassoc EQ NEQ LT LE GT GE 
 %left PLUS MINUS
 %left TIMES DIV DIVI MOD
+%precedence UPLUS UMINUS
 
 %token LPAREN RPAREN
 
@@ -132,6 +133,15 @@ expr:
  LPAREN expr RPAREN {
         $$ = $2;
     }
+|
+
+    PLUS expr %prec UPLUS {
+        $$ = ast_unary(PLUS, $2);
+    }
+  | MINUS expr %prec UMINUS {
+        $$ = ast_unary(MINUS, $2);
+    }
+
 |
   expr PLUS expr { 
     $$ = ast_operation(PLUS, $1, $3); 
