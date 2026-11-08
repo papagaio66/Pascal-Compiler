@@ -154,6 +154,7 @@ int beval(BoolExpr* bexpr) {
 	      default: yyerror("Unknown operator!");
 	    }
     }
+  }
   else if (bexpr->kind == BE_GATES) {
     int vLeft = beval(bexpr->attr.gate.left);
     int vRight = beval(bexpr->attr.gate.right);
