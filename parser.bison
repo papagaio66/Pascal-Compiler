@@ -1,6 +1,7 @@
 // Tokens
-%token INT PLUS MINUS TIMES DIV MOD
-  TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT 
+%token INT REAL
+%token PLUS MINUS TIMES DIV MOD
+%token  TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT 
 
 // Operator associativity & precedence
 %nonassoc EQ NEQ LT LE GT GE 
@@ -14,11 +15,13 @@
 // Types/values in association to grammar symbols.
 %union {
   int intValue;
+  double realValue;
   Expr* exprValue; 
   BoolExpr* boolValue;
 }
 
 %type <intValue> INT
+%type <realValue> REAL
 %type <exprValue> expr
 %type <boolValue> bexpr
 
@@ -45,6 +48,10 @@ expr:
     $$ = ast_integer($1); 
   }
   | 
+  REAL { 
+    $$ = ast_real($1); 
+  }
+  |
   expr PLUS expr { 
     $$ = ast_operation(PLUS, $1, $3); 
   }
