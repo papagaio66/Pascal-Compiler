@@ -66,6 +66,28 @@ Value eval(Expr* expr) {
   else if (expr->kind==E_VARIABLE){
 	  result=getVar(expr->attr.variable);
   }
+  else if (expr->kind == E_UNARY) {
+	    Value operand = eval(expr->attr.unary.operand);
+
+	    switch (expr->attr.unary.operator) {
+
+		case PLUS:
+		    result = operand;
+		    break;
+
+		case MINUS:
+		    if (operand.isReal) {
+			result = make_real(-operand.value.real);
+		    }
+		    else {
+			result = make_integer(-operand.value.integer);
+		    }
+		    break;
+
+		default:
+		    yyerror("Unknown unary operator!");
+	    }
+	}
   else if (expr->kind == E_OPERATION) {
     Value vLeft = eval(expr->attr.op.left);
     Value vRight = eval(expr->attr.op.right);
