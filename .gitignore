@@ -3,3 +3,4 @@ parser.h
 scanner.c
 *.o
 interpreter
+*.txt

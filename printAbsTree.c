@@ -56,6 +56,14 @@ static void printExprAux(Expr* expr, int depth) {
     printf("|\n");
     printExprAux(expr->attr.op.right, depth + 1);
   }
+  else if (expr->kind == E_VARIABLE) {
+    printIndent(depth+1);
+    printf("VARIABLE\n");
+    printIndent(depth+1);
+    printf("|\n");
+    printIndent(depth+1);
+    printf("%s\n", expr->attr.variable);
+  }
   return;
 }
 
