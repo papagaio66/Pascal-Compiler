@@ -201,6 +201,16 @@ static void printCmdAux(Cmd* cmd, int depth) {
     printf("|\n");
     printExprAux(cmd->attr.write.value, depth + 1);
 }
+else if (cmd->kind == C_READ) {
+    printIndent(depth);
+    printf("READ\n");
+
+    printIndent(depth + 1);
+    printf("|\n");
+
+    printIndent(depth + 1);
+    printf("%s\n", cmd->attr.read.var);
+}
   return;
 }
 
