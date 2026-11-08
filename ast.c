@@ -71,6 +71,13 @@ Cmd* ast_assign
   node->attr.assign.value = value;
   return node;
 }
+Cmd* ast_declare(int type, char* var) {
+    Cmd* node = malloc(sizeof(Cmd));
+    node->kind = C_DECL;
+    node->attr.decl.type = type;
+    node->attr.decl.var = strdup(var);
+    return node;
+}
 Cmd* ast_ifthen
 (BoolExpr* cond, Cmd* thenCmd) {
   Cmd* node = (Cmd*) malloc(sizeof(Cmd));

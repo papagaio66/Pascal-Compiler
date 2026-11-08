@@ -5,6 +5,8 @@
 %token ASSIGN IF THEN ELSE WHILE DO P_BEGIN P_END SEMICOLON
 %token <strValue> ID
 
+%token INTEGER_TYPE REAL_TYPE
+
 // Operator associativity & precedence
 %left SEMICOLON
 %nonassoc LOWER_THAN_ELSE
@@ -13,7 +15,7 @@
 %left PLUS MINUS OR XOR
 %left TIMES DIV DIVI MOD AND
 %right NOT
-
+:w
 %token INTEGER REAL_TYPE
 %token LPAREN RPAREN
 
@@ -144,6 +146,14 @@ bexpr:
   }
   
 cmd:
+    INTEGER ID {
+        $$ = ast_declare(INTEGER, $2);
+    }
+    |
+    REAL_TYPE ID {
+        $$ = ast_declare(REAL_TYPE, $2);
+    }
+    |
   ID ASSIGN expr {
     $$ = ast_assign($1, $3);
   }

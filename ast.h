@@ -49,6 +49,7 @@ struct _BoolExpr {
 struct _Cmd {
   enum {
     C_ASSIGN,
+    C_DECL,
     C_IFTHEN,
     C_IFELSE,
     C_WHILE,
@@ -59,6 +60,10 @@ struct _Cmd {
       char* var;
       struct _Expr* value; //can be 1+1
     } assign;
+    struct {
+	    int type;
+	    char* var;
+	} decl;
     struct {
       struct _BoolExpr* cond;
       struct _Cmd* thenCmd;
@@ -108,6 +113,7 @@ BoolExpr* ast_gates(int operator, BoolExpr* left, BoolExpr* right);
 BoolExpr* ast_inner(BoolExpr* inner);
 
 Cmd* ast_assign(char* var, Expr* value);
+Cmd* ast_declare(int type,char* var);
 Cmd* ast_ifthen(BoolExpr* cond, Cmd* thenCmd);
 Cmd* ast_ifelse(BoolExpr* cond, Cmd* thenCmd, Cmd* elseCmd);
 Cmd* ast_while(BoolExpr* cond, Cmd* thenCmd);
