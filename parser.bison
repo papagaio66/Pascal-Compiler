@@ -2,7 +2,7 @@
 %token INT REAL
 %token PLUS MINUS TIMES DIV DIVI MOD
 %token TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT
-%token ASSIGN IF THEN ELSE WHILE DO P_BEGIN P_END SEMICOLON
+%token ASSIGN IF THEN ELSE WHILE DO P_BEGIN P_END SEMICOLON COMMA
 %token <strValue> ID
 
 %token INTEGER_TYPE REAL_TYPE
@@ -41,13 +41,18 @@
 }
 
 %type <intValue> INT
+%type <intValue> type
 %type <realValue> REAL
 %type <exprValue> expr
 %type <boolValue> bexpr
 
 %type <cmdValue> block declarations var_declarations
-%type <cmdValue> var_declaration compound_statement cmds cmd
+%type <cmdValue> var_declaration compound_statement cmds cmd id_list read_list
 
+
+%code {
+static void setDeclType(Cmd* c, int type);
+}
 // Use "%code requires" to make declarations go
 // into both parser.c and parser.h
 %code requires {
@@ -93,36 +98,57 @@ declarations:
 ;
 
 var_declarations:
-    var_declaration
-    {
-        $$ = $1;
-    }
-  | var_declarations var_declaration
-    {
-        $$ = ast_commands($1, $2);
-    }
+  var_declaration {
+    $$ = $1;
+  }
+  | 
+  var_declarations var_declaration {
+    $$ = ast_commands($1, $2);
+  }
 ;
 
 var_declaration:
-    ID COLON INTEGER_TYPE SEMICOLON
-    {
-        $$ = ast_declare(INTEGER_TYPE, $1);
-    }
-  | ID COLON REAL_TYPE SEMICOLON
-    {
-        $$ = ast_declare(REAL_TYPE, $1);
-    }
+  id_list COLON type SEMICOLON {
+    setDeclType($1, $3);
+    $$ = $1;
+  }
+;
+
+id_list:
+  ID {
+    $$ = ast_declare(0, $1);
+  }
+  |
+  id_list COMMA ID {
+    $$ = ast_commands($1, ast_declare(0, $3));
+  }
+;
+
+type:
+  INTEGER_TYPE { 
+    $$ = INTEGER_TYPE; 
+  }
+  | 
+  REAL_TYPE    { 
+    $$ = REAL_TYPE; 
+  }
+;
+
+read_list:
+  ID { 
+    $$ = ast_read($1); 
+  }
+  | 
+  read_list COMMA ID { 
+    $$ = ast_commands($1, ast_read($3)); 
+  }
 ;
 
 compound_statement:
-    P_BEGIN cmds P_END
-    {
-        $$ = $2;
-    }
+  P_BEGIN cmds P_END {
+    $$ = $2;
+  }
 ;
-
-
-
 
 expr: 
   INT { 
@@ -134,18 +160,16 @@ expr:
   }
   |
  LPAREN expr RPAREN {
-        $$ = $2;
-    }
-|
-
-    PLUS expr %prec UPLUS {
-        $$ = ast_unary(PLUS, $2);
-    }
+    $$ = $2;
+  }
+  |
+  PLUS expr %prec UPLUS {
+    $$ = ast_unary(PLUS, $2);
+  }
   | MINUS expr %prec UMINUS {
-        $$ = ast_unary(MINUS, $2);
-    }
-
-|
+    $$ = ast_unary(MINUS, $2);
+  }
+  |
   expr PLUS expr { 
     $$ = ast_operation(PLUS, $1, $3); 
   }
@@ -248,20 +272,21 @@ cmd:
     $$ = ast_ifelse($2, $4, $6);
   }
   |
-  WHILE bexpr DO cmd %prec LOWER_THAN_ELSE{
+  WHILE bexpr DO cmd %prec LOWER_THAN_ELSE {
     $$ = ast_while($2,$4);
   }
   | 
-  compound_statement
-  {
+  compound_statement {
     $$ = $1;
   }
-| WRITE LPAREN expr RPAREN {
+  | 
+  WRITE LPAREN expr RPAREN {
     $$ = ast_write($3);
-}
-| READ LPAREN ID RPAREN {
-    $$ = ast_read($3);
-}
+  }
+  | 
+  READ LPAREN read_list RPAREN {
+    $$ = $3;
+  }
 ;
 
 cmds:
@@ -279,6 +304,15 @@ cmds:
 ;
 
 %%
+
+static void setDeclType(Cmd* c, int type) {
+  if (c->kind == C_COMMANDS) {
+    setDeclType(c->attr.commands.left, type);
+    setDeclType(c->attr.commands.right, type);
+  } else {
+    c->attr.decl.type = type;
+  }
+}
 
 void yyerror(const char* err) {
   printf("Line %d: %s - '%s'\n", yyline, err, yytext  );

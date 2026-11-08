@@ -38,10 +38,6 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 program { return PROGRAM; }
 var     { return VAR; }
 
-":" { return COLON; }
-"." { return DOT; }
-
-
 {real} {
 	yylval.realValue=atof(yytext);
 	return REAL;
@@ -97,8 +93,9 @@ real    { return REAL_TYPE; }
 
 ":=" { return ASSIGN; }
 ";" { return SEMICOLON; }
-
-
+"," { return COMMA; }
+":" { return COLON; }
+"." { return DOT; }
 
 write { return WRITE; }
 read { return READ; }
