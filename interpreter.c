@@ -101,7 +101,7 @@ int beval(BoolExpr* bexpr) {
 
     int op =bexpr->attr.comp.operator;
 
-    if(!left.isReal&&!right.isReal){
+    if(!vLeft.isReal&&!vRight.isReal){
 	    int a=vLeft.value.integer;
 	    int b=vRight.value.integer;
 	switch(op){
