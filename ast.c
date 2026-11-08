@@ -54,3 +54,45 @@ BoolExpr* ast_inner
   node->attr.inner = inner;
   return node;
 }
+
+Cmd* ast_assign
+(char* var, _Expr* value) {
+  Cmd* node = (Cmd*) malloc(sizeof(Cmd));
+  node->kind = C_ASSIGN;
+  node->attr.assign.var = strdup(var); //alocates new memory so next scan doesnt change
+  node->attr.assign.value = value;
+  return node;
+}
+Cmd* ast_ifthen
+(_BoolExpr* cond, _Cmd* thenCmd) {
+  Cmd* node = (Cmd*) malloc(sizeof(Cmd));
+  node->kind = C_IFTHEN;
+  node->attr.ifthen.cond = cond;
+  node->attr.ifthen.thenCmd = thenCmd;
+  return node;
+}
+Cmd* ast_ifelse
+(_BoolExpr* cond, _Cmd* thenCmd, _Cmd* elseCmd) {
+  Cmd* node = (Cmd*) malloc(sizeof(Cmd));
+  node->kind = C_IFELSE;
+  node->attr.ifelse.cond = cond;
+  node->attr.ifelse.thenCmd = thenCmd;
+  node->attr.ifelse.elseCmd = elseCmd;
+  return node;
+}
+Cmd* ast_while
+(_BoolExpr* cond, _Cmd* thenCmd) {
+  Cmd* node = (Cmd*) malloc(sizeof(Cmd));
+  node->kind = C_WHILE;
+  node->attr.loop.cond = cond;
+  node->attr.loop.thenCmd = thenCmd;
+  return node;
+}
+Cmd* ast_commands
+(_Cmd* left, _Cmd* right) {
+  Cmd* node = (Cmd*) malloc(sizeof(Cmd));
+  node->kind = C_COMMANDS;
+  node->attr.commands.left = left;
+  node->attr.commands.right = right;
+  return node;
+}
