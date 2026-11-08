@@ -127,3 +127,9 @@ Cmd* ast_commands
   node->attr.commands.right = right;
   return node;
 }
+Cmd* ast_write(Expr* value) {
+    Cmd* node = malloc(sizeof(Cmd));
+    node->kind = C_WRITE;
+    node->attr.write.value = value;
+    return node;
+}
