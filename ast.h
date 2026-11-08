@@ -12,7 +12,7 @@ struct _Expr {
   } kind;
   union { //separates between op and value
     int value; // for integer values
-    int real; //  for   real  values
+    float real; //  for   real  values
 
     struct { 
       int operator; // PLUS, MINUS, etc 
@@ -115,4 +115,5 @@ Cmd* ast_commands(Cmd* left, Cmd* right);
 
 void printExpr(Expr* e);
 void printBoolExpr(BoolExpr* b);
+void printCmd(Cmd* c);
 #endif

@@ -44,7 +44,7 @@ static void printExprAux(Expr* expr, int depth) {
 	  printIndent(depth+1);
 	  printf("|\n");
 	  printIndent(depth+1);
-	  printf("%g\n",expr->attr.value);
+	  printf("%g\n",expr->attr.real);
   }
   else if (expr->kind == E_OPERATION) { //claude
     printIndent(depth);
