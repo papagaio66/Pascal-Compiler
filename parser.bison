@@ -15,11 +15,7 @@
 %left PLUS MINUS OR XOR
 %left TIMES DIV DIVI MOD AND
 %right NOT
-<<<<<<< HEAD
 
-%token INTEGER REAL_TYPE
-=======
->>>>>>> 59208b8efd4ac252e18e6f96f9e79e067e2aab41
 %token LPAREN RPAREN
 
 // Root-level grammar symbol

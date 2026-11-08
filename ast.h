@@ -13,7 +13,7 @@ struct _Expr {
   } kind;
   union { //separates between op and value
     int value; // for integer values
-    float real; //  for   real  values
+    double real; //  for   real  values
 
     struct { 
       int operator; // PLUS, MINUS, etc 

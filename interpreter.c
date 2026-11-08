@@ -61,7 +61,7 @@ Value eval(Expr* expr) {
     result = make_integer(expr->attr.value); 
   } 
   else if (expr->kind == E_REAL) {
-    result = make_real(expr->attr.value); 
+    result = make_real(expr->attr.real); 
   } 
   else if (expr->kind==E_VARIABLE){
 	  result=getVar(expr->attr.variable);
@@ -89,7 +89,7 @@ Value eval(Expr* expr) {
     }
     if(op==DIVI){
 	    if(vLeft.isReal||vRight.isReal){
-		    yyerror("MOD requires integer operands!");
+		    yyerror("DIV requires integer operands!");
 		    return make_integer(0);
 	    }
 	    //nao tamos a chekar divs e mods por 0, acho q o fpc n faz isso (99% certeza)
@@ -100,16 +100,17 @@ Value eval(Expr* expr) {
 	    double b=vRight.isReal ? vRight.value.real : vRight.value.integer;
 	    switch(op){
 	      case PLUS: //ja veio com
-		result = make_real(a + b); 
-		break;
+          result = make_real(a + b); 
+          break;
 	      case MINUS: //Até mod é novo
-		result = make_real(a - b);
-		break;
+          result = make_real(a - b);
+          break;
 	      case TIMES:
-		result = make_real(a * b);
-		break;
+          result = make_real(a * b);
+          break;
 	      default: yyerror("Unknown operator!");
 	    }
+      return result;
     }
     int a=vLeft.value.integer;
     int b=vRight.value.integer;
