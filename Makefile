@@ -2,7 +2,7 @@
 OBJS=scanner.o parser.o ast.o interpreter.o printAbsTree.o
 INTERM=scanner.c parser.c parser.h
 PROGRAM=./interpreter
-CFLAGS=-g 
+CFLAGS=-g -Wall -Wextra
 
 all: $(PROGRAM)
 

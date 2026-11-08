@@ -3,7 +3,7 @@
 #include "parser.h"
 
 static void printIndent(int depth) {
-  for (int i=0; i<depth; i++) printf(" ");
+  for (int i=0; i<depth; i++) printf("   ");
 }
 
 static const char* opName(int op) { //Claude
@@ -12,6 +12,7 @@ static const char* opName(int op) { //Claude
     case MINUS: return "SUB";
     case TIMES: return "MULT";
     case DIV:   return "DIV";
+    case DIVI: return "DIVI";
     case MOD:   return "MOD";
     case EQ: return "EQ";
     case NEQ: return "NEQ";
@@ -31,7 +32,7 @@ static void printExprAux(Expr* expr, int depth) {
     yyerror("Null expression!!");
   }
   else if (expr->kind == E_INTEGER) {
-    printIndent(depth+1);
+    printIndent(depth);
     printf("INTEGER\n");
     printIndent(depth+1);
     printf("|\n");
@@ -39,7 +40,7 @@ static void printExprAux(Expr* expr, int depth) {
     printf("%d\n",expr->attr.value);
   }
   else if (expr->kind==E_REAL){
-	  printIndent(depth+1);
+	  printIndent(depth);
 	  printf("REAL\n");
 	  printIndent(depth+1);
 	  printf("|\n");
@@ -57,7 +58,7 @@ static void printExprAux(Expr* expr, int depth) {
     printExprAux(expr->attr.op.right, depth + 1);
   }
   else if (expr->kind == E_VARIABLE) {
-    printIndent(depth+1);
+    printIndent(depth);
     printf("VARIABLE\n");
     printIndent(depth+1);
     printf("|\n");
@@ -72,7 +73,7 @@ static void printBoolExprAux(BoolExpr* bexpr, int depth) {
     yyerror("Null expression!!");
   }
   else if (bexpr->kind == BE_BOOLEAN) {
-    printIndent(depth+1);
+    printIndent(depth);
     printf("BOOL\n");
     printIndent(depth+1);
     printf("|\n");
@@ -127,14 +128,15 @@ static void printCmdAux(Cmd* cmd, int depth) {
   else if (cmd->kind == C_DECL) {
     printIndent(depth);
     printf("DECLARATION\n");
-
     printIndent(depth + 1);
-    printf("%s\n",
-        cmd->attr.decl.type == INTEGER_TYPE ? "INTEGER" : "REAL");
-
+    printf("|\n");
+    printIndent(depth + 1);
+    printf("%s\n", cmd->attr.decl.type == INTEGER_TYPE ? "INTEGER" : "REAL");
+    printIndent(depth + 1);
+    printf("|\n");
     printIndent(depth + 1);
     printf("%s\n", cmd->attr.decl.var);
-}
+  }
   else if (cmd->kind == C_IFTHEN) {
     printIndent(depth);
     printf("IFTHEN\n");
