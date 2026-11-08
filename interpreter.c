@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "ast.h"
 #include "parser.h"
 
@@ -19,6 +20,22 @@ Value make_real(double n){
 	return v;
 }
 
+#define MAX_VARS 100 //value
+static char* varNames[MAX_VARS];
+static Value varValues[MAX_VARS];      // was: int
+static int   nVars = 0;
+
+static void storeVar(const char* name, Value value) {   // was: int value
+  for (int i = 0; i < nVars; i++) {
+    if (strcmp(varNames[i], name) == 0) {
+      varValues[i] = value;
+      return;
+    }
+  }
+  varNames[nVars] = strdup(name);
+  varValues[nVars] = value;
+  nVars++;
+}
 
 Value eval(Expr* expr) {
   Value result = make_integer(0);
@@ -186,8 +203,24 @@ int beval(BoolExpr* bexpr) {
 }
 
 int ceval(Cmd* cmd) {
-  int result = 0;
-  return result;
+  if (cmd->kind == C_ASSIGN) {
+    storeVar(cmd->attr.assign.var, eval(cmd->attr.assign.value));
+  }
+  else if (cmd->kind == C_IFTHEN) {
+    if (beval(cmd->attr.ifthen.cond)) ceval(cmd->attr.ifthen.thenCmd);
+  }
+  else if (cmd->kind == C_IFELSE) {
+    if (beval(cmd->attr.ifelse.cond)) ceval(cmd->attr.ifelse.thenCmd);
+    else ceval(cmd->attr.ifelse.elseCmd);
+  }
+  else if (cmd->kind == C_WHILE) {
+    while (beval(cmd->attr.loop.cond)) ceval(cmd->attr.loop.thenCmd);
+  }
+  else if (cmd->kind == C_COMMANDS) {
+    ceval(cmd->attr.commands.left);
+    ceval(cmd->attr.commands.right);
+  }
+  return 0;
 }
 
 int main(int argc, char** argv) {
