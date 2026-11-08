@@ -57,6 +57,8 @@ static void declareVar(const char* name, int type) {
         varValues[nVars] = make_integer(0);
     else if (type == REAL_TYPE)
         varValues[nVars] = make_real(0.0);
+    else if (type == BOOLEAN_TYPE)
+        varValues[nVars] = make_integer(0);   // false
     else {
         yyerror("Unknown variable type!");
         free(varNames[nVars]);
@@ -68,30 +70,36 @@ static void declareVar(const char* name, int type) {
 
 
 static void storeVar(const char* name, Value value) {
+  int index = findVar(name);
+  if (index == -1) {
+    yyerror("Variable not declared!");
+    return;
+  }
 
-    int index = findVar(name);
-
-    if (index == -1) {
-        yyerror("Variable not declared!");
-        return;
+  /* Integer variable */
+  if (varTypes[index] == INTEGER_TYPE) {
+    if (value.isReal) {
+      yyerror("Cannot assign real value to integer variable!");
+      return;
     }
-
-    /* Integer variable */
-    if (varTypes[index] == INTEGER_TYPE) {
-
-        if (value.isReal) {
-            yyerror("Cannot assign real value to integer variable!");
-            return;
-        }
-
-        varValues[index] = value;
-    }
+    varValues[index] = value;
+  }
 
     /* Real variable */
     else if (varTypes[index] == REAL_TYPE) {
 
         if (!value.isReal)
             value = make_real((double)value.value.integer);
+
+        varValues[index] = value;
+    }
+      /* Boolean variable */
+    else if (varTypes[index] == BOOLEAN_TYPE) {
+
+        if (value.isReal) {
+            yyerror("Cannot assign real value to boolean variable!");
+            return;
+        }
 
         varValues[index] = value;
     }
@@ -299,12 +307,19 @@ int beval(BoolExpr* bexpr) {
   else if (bexpr->kind == BE_INNER) {
     result = !beval(bexpr->attr.inner);
   }
+  else if (bexpr->kind == BE_VARIABLE) {
+    result = getVar(bexpr->attr.variable).value.integer != 0;
+  }
   return result;
 }
 
 int ceval(Cmd* cmd) {
   if (cmd->kind == C_ASSIGN) {
     storeVar(cmd->attr.assign.var, eval(cmd->attr.assign.value));
+  }
+  else if (cmd->kind == C_BOOLASSIGN) {
+    storeVar(cmd->attr.boolassign.var,
+             make_integer(beval(cmd->attr.boolassign.value) ? 1 : 0));
   }
   else if (cmd->kind == C_IFTHEN) {
     if (beval(cmd->attr.ifthen.cond)) ceval(cmd->attr.ifthen.thenCmd);
