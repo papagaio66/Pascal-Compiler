@@ -116,6 +116,17 @@ static void printCmdAux(Cmd* cmd, int depth) {
     printf("|\n");
     printExprAux(cmd->attr.assign.value, depth + 1);
   }
+  else if (cmd->kind == C_DECL) {
+    printIndent(depth);
+    printf("DECLARATION\n");
+
+    printIndent(depth + 1);
+    printf("%s\n",
+        cmd->attr.decl.type == INTEGER ? "INTEGER" : "REAL");
+
+    printIndent(depth + 1);
+    printf("%s\n", cmd->attr.decl.var);
+}
   else if (cmd->kind == C_IFTHEN) {
     printIndent(depth);
     printf("IFTHEN\n");
