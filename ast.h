@@ -8,7 +8,8 @@ struct _Expr {
   enum { 
     E_INTEGER,
     E_REAL,
-    E_OPERATION
+    E_OPERATION,
+    E_VARIABLE
   } kind;
   union { //separates between op and value
     int value; // for integer values
@@ -19,6 +20,8 @@ struct _Expr {
       struct _Expr* left;
       struct _Expr* right;
     } op; // for binary expressions
+	
+    char* variable;
   } attr;
 };
 
@@ -105,6 +108,7 @@ Value eval(Expr* expr);
 Expr* ast_integer(int v);
 Expr* ast_real(double v);
 Expr* ast_operation(int operator, Expr* left, Expr* right);
+Expr* ast_variable(char* name);
 
 // AQUIIIIIIIIIIIIII Constructor functions (see implementation in ast.c)
 BoolExpr* ast_boolean(int v);
