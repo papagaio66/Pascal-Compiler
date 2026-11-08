@@ -14,6 +14,9 @@
 %left TIMES DIV DIVI MOD AND
 %right NOT
 
+%token INTEGER REAL_TYPE
+%token LPAREN RPAREN
+
 // Root-level grammar symbol
 %start program;
 
@@ -60,6 +63,10 @@ expr:
     $$ = ast_real($1); 
   }
   |
+ LPAREN expr RPAREN {
+        $$ = $2;
+    }
+|
   expr PLUS expr { 
     $$ = ast_operation(PLUS, $1, $3); 
   }
@@ -83,6 +90,9 @@ expr:
   expr MOD expr {
     $$ = ast_operation(MOD, $1, $3);
   }
+| ID {
+    $$ = ast_variable($1);
+}
 
 bexpr:
   TRUE {
