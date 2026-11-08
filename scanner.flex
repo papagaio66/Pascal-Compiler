@@ -24,6 +24,14 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 \n { yyline++; }
 
 
+
+program { return PROGRAM; }
+var     { return VAR; }
+
+":" { return COLON; }
+"." { return DOT; }
+
+
 {real} {
 	yylval.realValue=atof(yytext);
 	return REAL;

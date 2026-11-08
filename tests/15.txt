@@ -1,0 +1,6 @@
+begin
+    x := 5;
+    begin
+        y := 10;
+    end;
+end

@@ -7,6 +7,9 @@
 
 %token INTEGER_TYPE REAL_TYPE
 
+
+%token PROGRAM VAR COLON DOT
+
 // Operator associativity & precedence
 %left SEMICOLON
 %nonassoc LOWER_THAN_ELSE
@@ -37,7 +40,9 @@
 %type <realValue> REAL
 %type <exprValue> expr
 %type <boolValue> bexpr
-%type <cmdValue> cmd
+
+%type <cmdValue> block declarations var_declarations
+%type <cmdValue> var_declaration compound_statement cmds cmd
 
 // Use "%code requires" to make declarations go
 // into both parser.c and parser.h
@@ -55,7 +60,65 @@ extern Cmd* root;
 }
 
 %%
-program: cmd { root = $1; }
+program:
+    PROGRAM ID SEMICOLON block DOT
+    {
+        root = $4;
+    }
+;
+
+block:
+    declarations compound_statement
+    {
+        if ($1 == NULL)
+            $$ = $2;
+        else
+            $$ = ast_commands($1, $2);
+    }
+;
+
+declarations:
+    %empty
+    {
+        $$ = NULL;
+    }
+  | VAR var_declarations
+    {
+        $$ = $2;
+    }
+;
+
+var_declarations:
+    var_declaration
+    {
+        $$ = $1;
+    }
+  | var_declarations var_declaration
+    {
+        $$ = ast_commands($1, $2);
+    }
+;
+
+var_declaration:
+    ID COLON INTEGER_TYPE SEMICOLON
+    {
+        $$ = ast_declare(INTEGER_TYPE, $1);
+    }
+  | ID COLON REAL_TYPE SEMICOLON
+    {
+        $$ = ast_declare(REAL_TYPE, $1);
+    }
+;
+
+compound_statement:
+    P_BEGIN cmds P_END
+    {
+        $$ = $2;
+    }
+;
+
+
+
 
 expr: 
   INT { 
@@ -174,18 +237,22 @@ cmd:
   |
   P_BEGIN cmds P_END {
     $$ = $2;
-  };
+  }| compound_statement
+    {
+        $$ = $1;
+    }
+;
 
 cmds:
   cmd {
 	$$=$1;
 	}
 |
-  cmd SEMICOLON cmd {
+  cmds SEMICOLON cmd {
     $$ = ast_commands($1, $3);
   }
 |
-	cmd SEMICOLON {
+	cmds SEMICOLON {
 	  $$=$1;
 	}
 ;

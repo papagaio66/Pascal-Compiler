@@ -239,6 +239,14 @@ int ceval(Cmd* cmd) {
     ceval(cmd->attr.commands.left);
     ceval(cmd->attr.commands.right);
   }
+  else if (cmd->kind == C_DECL) {
+    if (cmd->attr.decl.type == INTEGER_TYPE) {
+        storeVar(cmd->attr.decl.var, make_integer(0));
+    }
+    else if (cmd->attr.decl.type == REAL_TYPE) {
+        storeVar(cmd->attr.decl.var, make_real(0.0));
+    }
+   }
   return 0;
 }
 

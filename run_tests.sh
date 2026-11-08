@@ -30,22 +30,5 @@ for file in "$TEST_DIR"/*.txt; do
     "$INTERPRETER" "$file"
     STATUS=$?
 
-    if [ "$STATUS" -eq 0 ]; then
-        echo ""
-        echo "[PASS] $file"
-        PASSED=$((PASSED + 1))
-    else
-        echo ""
-        echo "[FAIL] $file (exit code: $STATUS)"
-        FAILED=$((FAILED + 1))
-    fi
 done
 
-echo ""
-echo "========================================"
-echo "             TEST SUMMARY"
-echo "========================================"
-echo "Total:  $TOTAL"
-echo "Passed: $PASSED"
-echo "Failed: $FAILED"
-echo "========================================"
