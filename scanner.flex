@@ -13,10 +13,22 @@ int yyline = 1;
 alpha [_a-zA-Z]
 digit [0-9]
 
+digits {digit}+
+expon [Ee][+-]?{digits}
+
+real ({digits}"."{digits}({expon})?|{digits}{expon})
+
 %%
 [ \t]+ {  }
 "#"[^\n]* {}
 \n { yyline++; }
+
+
+{real} {
+	yylval.realValue=atof(yytext);
+	real REAL;
+}
+
 
 {digit}+ { 
    yylval.intValue = atoi(yytext);
