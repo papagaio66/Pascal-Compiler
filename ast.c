@@ -35,6 +35,15 @@ Expr* ast_variable(char* name) {
   return node;
 }
 
+
+Expr* ast_unary(int operator, Expr* operand) {
+    Expr* node = malloc(sizeof(Expr));
+    node->kind = E_UNARY;
+    node->attr.unary.operator = operator;
+    node->attr.unary.operand = operand;
+    return node;
+}
+
 BoolExpr* ast_boolean(int v) {
   BoolExpr* node = (BoolExpr*) malloc(sizeof(BoolExpr));
   node->kind = BE_BOOLEAN;

@@ -10,6 +10,7 @@ struct _Expr {
     E_REAL,
     E_OPERATION,
     E_VARIABLE
+    E_UNARY
   } kind;
   union { //separates between op and value
     int value; // for integer values
@@ -20,6 +21,11 @@ struct _Expr {
       struct _Expr* left;
       struct _Expr* right;
     } op; // for binary expressions
+
+    struct {
+	    int operator;
+	    struct _Expr* operand;
+    } unary;
 	
     char* variable;
   } attr;
@@ -109,6 +115,7 @@ Expr* ast_integer(int v);
 Expr* ast_real(double v);
 Expr* ast_operation(int operator, Expr* left, Expr* right);
 Expr* ast_variable(char* name);
+Expr* ast_unary(int operator,Expr* operand);
 
 // AQUIIIIIIIIIIIIII Constructor functions (see implementation in ast.c)
 BoolExpr* ast_boolean(int v);
