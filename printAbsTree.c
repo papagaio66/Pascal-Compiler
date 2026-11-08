@@ -47,6 +47,19 @@ static void printExprAux(Expr* expr, int depth) {
 	  printIndent(depth+1);
 	  printf("%g\n",expr->attr.real);
   }
+  else if (expr->kind == E_UNARY) {
+	    printIndent(depth);
+
+	    if (expr->attr.unary.operator == MINUS)
+		printf("UNARY MINUS\n");
+	    else
+		printf("UNARY PLUS\n");
+
+	    printIndent(depth + 1);
+	    printf("|\n");
+
+	    printExprAux(expr->attr.unary.operand, depth + 1);
+	}
   else if (expr->kind == E_OPERATION) { //claude
     printIndent(depth);
     printf("%s\n", opName(expr->attr.op.operator));
