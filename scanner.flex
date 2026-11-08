@@ -22,6 +22,15 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 %%
 [ \t]+ {  }
 "#"[^\n]* {}
+"{"[^}]*"}" {
+  for (char* p = yytext; *p; p++)
+    if (*p == '\n') yyline++;
+}
+
+"(*"([^*]|\*+[^*)])*\*+")" {
+  for (char* p = yytext; *p; p++)
+    if (*p == '\n') yyline++;
+}
 \n { yyline++; }
 
 
