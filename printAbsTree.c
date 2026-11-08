@@ -6,7 +6,7 @@ static void printIndent(int depth) {
   for (int i=0; i<depth; i++) printf("   ");
 }
 
-static const char* opName(int op) { //Claude
+static const char* opName(int op) {
   switch (op) {
     case PLUS:  return "ADD";
     case MINUS: return "SUB";
@@ -60,7 +60,7 @@ static void printExprAux(Expr* expr, int depth) {
 
 	    printExprAux(expr->attr.unary.operand, depth + 1);
 	}
-  else if (expr->kind == E_OPERATION) { //claude
+  else if (expr->kind == E_OPERATION) {
     printIndent(depth);
     printf("%s\n", opName(expr->attr.op.operator));
     printIndent(depth + 1);
@@ -80,6 +80,7 @@ static void printExprAux(Expr* expr, int depth) {
   }
   return;
 }
+
 
 static void printBoolExprAux(BoolExpr* bexpr, int depth) {
   if (bexpr == 0) {
@@ -130,7 +131,7 @@ static void printCmdAux(Cmd* cmd, int depth) {
   else if (cmd->kind==C_ASSIGN) {
     printIndent(depth);
     printf("ASSIGN\n");
-    printIndent(depth);
+    printIndent(depth + 1);
     printf("|\n");
     printIndent(depth + 1);
     printf("%s\n", cmd->attr.assign.var);
@@ -196,10 +197,8 @@ static void printCmdAux(Cmd* cmd, int depth) {
   else if (cmd->kind == C_WRITE) {
     printIndent(depth);
     printf("WRITE\n");
-
     printIndent(depth + 1);
     printf("|\n");
-
     printExprAux(cmd->attr.write.value, depth + 1);
 }
   return;

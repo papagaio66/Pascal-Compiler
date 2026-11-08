@@ -1,6 +1,18 @@
+program test;
+
+var
+    a: integer;
+    b: real;
+
 begin
-    x := 5;
-    begin
-        y := 10;
-    end;
-end
+    a := -5;
+    b := -3.5;
+
+    a := +a;
+    b := -(-b);
+
+    a := 10 + -5;
+    a := 10 * -2;
+
+    a := -(5 + 3);
+end.
