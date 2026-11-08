@@ -21,7 +21,7 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 
 %%
 [ \t]+ {  }
-"#"[^\n]* {}
+
 "{"[^}]*"}" {
   for (char* p = yytext; *p; p++)
     if (*p == '\n') yyline++;
