@@ -172,13 +172,23 @@ cmd:
     $$ = ast_while($2,$4);
   }
   |
-  P_BEGIN cmd P_END {
+  P_BEGIN cmds P_END {
     $$ = $2;
   }
   |
+  cmd {
+	$$=$1;
+	}
+|
   cmd SEMICOLON cmd {
     $$ = ast_commands($1, $3);
-  };
+  }
+|
+	cmds SEMICOLON {
+	  $$=$1;
+	}
+
+;
 
 %%
 

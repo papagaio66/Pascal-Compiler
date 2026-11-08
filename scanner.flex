@@ -39,7 +39,7 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 "-" { return MINUS; }
 "*" { return TIMES; }
 "/" { return DIV; }
-"%" { return MOD; }
+[mM][oO][dD] { return MOD; }
 [dD][iI][vV] { return DIVI; }
 
 true { return TRUE; }
