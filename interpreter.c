@@ -88,6 +88,7 @@ Value eval(Expr* expr) {
   return result;
 }
 
+
 int beval(BoolExpr* bexpr) {
   int result = 0;
   if (bexpr == 0){
@@ -97,7 +98,7 @@ int beval(BoolExpr* bexpr) {
     result = bexpr->attr.value;
   }
   else if (bexpr->kind == BE_COMPARE) {
-    Value vLeft = eval(bexpr->attr.comp.left); //numeros entao expr
+    Value vLeft = eval(bexpr->attr.comp.left); //numeros estao expr
     Value vRight = eval(bexpr->attr.comp.right);
 
     int op =bexpr->attr.comp.operator;
@@ -105,56 +106,54 @@ int beval(BoolExpr* bexpr) {
     if(!vLeft.isReal&&!vRight.isReal){
 	    int a=vLeft.value.integer;
 	    int b=vRight.value.integer;
-	switch(op){
-      case EQ:
-        result = (a == b); 
-        break;
-      case NEQ:
-        result = (a != b);
-        break;
-      case LT:
-        result = (a < b);
-        break;
-      case LE:
-        result = (a <= b);
-        break;
-      case GT:
-        result = (a > b);
-        break;
-      case GE:
-        result = (a >= b);
-        break;
-      default: yyerror("Unknown operator!");
+      switch(op){
+        case EQ:
+          result = (a == b); 
+          break;
+        case NEQ:
+          result = (a != b);
+          break;
+        case LT:
+          result = (a < b);
+          break;
+        case LE:
+          result = (a <= b);
+          break;
+        case GT:
+          result = (a > b);
+          break;
+        case GE:
+          result = (a >= b);
+          break;
+        default: yyerror("Unknown operator!");
+      }
     }
-  }
-    else{
+    else {
 	    double a=vLeft.isReal ? vLeft.value.real : vLeft.value.integer;
 	    double b=vRight.isReal ? vRight.value.real : vRight.value.integer;
 
-		switch(op){
+		  switch(op){
 	      case EQ:
-		result = (a == b); 
-		break;
+		      result = (a == b); 
+		      break;
 	      case NEQ:
-		result = (a != b);
-		break;
+		      result = (a != b);
+          break;
 	      case LT:
-		result = (a < b);
-		break;
+          result = (a < b);
+          break;
 	      case LE:
-		result = (a <= b);
-		break;
+          result = (a <= b);
+          break;
 	      case GT:
-		result = (a > b);
-		break;
+          result = (a > b);
+          break;
 	      case GE:
-		result = (a >= b);
-		break;
+          result = (a >= b);
+          break;
 	      default: yyerror("Unknown operator!");
 	    }
     }
-
-
   else if (bexpr->kind == BE_GATES) {
     int vLeft = beval(bexpr->attr.gate.left);
     int vRight = beval(bexpr->attr.gate.right);

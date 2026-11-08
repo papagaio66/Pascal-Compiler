@@ -107,7 +107,57 @@ static void printCmdAux(Cmd* cmd, int depth) {
   }
   else if (cmd->kind==C_ASSIGN) {
     printIndent(depth);
-    prinf()
+    prinf("ASSIGN\n");
+    printIndent(depth);
+    printf("|\n");
+    printIndent(depth + 1);
+    printf("%s\n", c->attr.assign.var);
+    printIndent(depth + 1);
+    printf("|\n");
+    printExprAux(c->attr.assign.value, depth + 1);
+  }
+  else if (c->kind == C_IFTHEN) {
+    printIndent(depth);
+    printf("IFTHEN\n");
+    printIndent(depth + 1);
+    printf("|\n");
+    printBoolExprAux(c->attr.ifthen.cond, depth + 1);
+    printIndent(depth + 1);
+    printf("|\n");
+    printCmdAux(c->attr.ifthen.thenCmd, depth + 1);
+  }
+  else if (c->kind == C_IFELSE) {
+    printIndent(depth);
+    printf("IFTHENELSE\n");
+    printIndent(depth + 1);
+    printf("|\n");
+    printBoolExprAux(c->attr.ifelse.cond, depth + 1);
+    printIndent(depth + 1);
+    printf("|\n");
+    printCmdAux(c->attr.ifelse.thenCmd, depth + 1);
+    printIndent(depth + 1);
+    printf("|\n");
+    printCmdAux(c->attr.ifelse.elseCmd, depth + 1);
+  }
+  else if (c->kind == C_WHILE) {
+    printIndent(depth);
+    printf("WHILE\n");
+    printIndent(depth + 1);
+    printf("|\n");
+    printBoolExprAux(c->attr.loop.cond, depth + 1);
+    printIndent(depth + 1);
+    printf("|\n");
+    printCmdAux(c->attr.loop.body, depth + 1);
+  }
+  else if (c->kind == C_COMMANDS) {
+    printIndent(depth);
+    printf("COMPOUND\n");
+    printIndent(depth + 1);
+    printf("|\n");
+    printCmdAux(c->attr.commands.first, depth + 1);
+    printIndent(depth + 1);
+    printf("|\n");
+    printCmdAux(c->attr.commands.second, depth + 1);
   }
 }
 
