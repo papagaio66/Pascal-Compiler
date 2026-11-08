@@ -174,8 +174,9 @@ cmd:
   |
   P_BEGIN cmds P_END {
     $$ = $2;
-  }
-  |
+  };
+
+cmds:
   cmd {
 	$$=$1;
 	}
@@ -184,10 +185,9 @@ cmd:
     $$ = ast_commands($1, $3);
   }
 |
-	cmds SEMICOLON {
+	cmd SEMICOLON {
 	  $$=$1;
 	}
-
 ;
 
 %%
