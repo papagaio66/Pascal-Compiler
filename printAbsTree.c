@@ -107,7 +107,7 @@ static void printCmdAux(Cmd* cmd, int depth) {
   }
   else if (cmd->kind==C_ASSIGN) {
     printIndent(depth);
-    prinf("ASSIGN\n");
+    printf("ASSIGN\n");
     printIndent(depth);
     printf("|\n");
     printIndent(depth + 1);
