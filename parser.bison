@@ -15,8 +15,11 @@
 %left PLUS MINUS OR XOR
 %left TIMES DIV DIVI MOD AND
 %right NOT
+<<<<<<< HEAD
 
 %token INTEGER REAL_TYPE
+=======
+>>>>>>> 59208b8efd4ac252e18e6f96f9e79e067e2aab41
 %token LPAREN RPAREN
 
 // Root-level grammar symbol
@@ -147,8 +150,8 @@ bexpr:
   }
   
 cmd:
-    INTEGER ID {
-        $$ = ast_declare(INTEGER, $2);
+    INTEGER_TYPE ID {
+        $$ = ast_declare(INTEGER_TYPE, $2);
     }
     |
     REAL_TYPE ID {

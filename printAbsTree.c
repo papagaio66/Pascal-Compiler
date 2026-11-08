@@ -122,7 +122,7 @@ static void printCmdAux(Cmd* cmd, int depth) {
 
     printIndent(depth + 1);
     printf("%s\n",
-        cmd->attr.decl.type == INTEGER ? "INTEGER" : "REAL");
+        cmd->attr.decl.type == INTEGER_TYPE ? "INTEGER" : "REAL");
 
     printIndent(depth + 1);
     printf("%s\n", cmd->attr.decl.var);

@@ -28,6 +28,13 @@ Expr* ast_operation
   return node;
 }
 
+Expr* ast_variable(char* name) {
+  Expr* node = (Expr*) malloc(sizeof(Expr));
+  node->kind = E_VARIABLE;
+  node->attr.variable = strdup(name);
+  return node;
+}
+
 BoolExpr* ast_boolean(int v) {
   BoolExpr* node = (BoolExpr*) malloc(sizeof(BoolExpr));
   node->kind = BE_BOOLEAN;
