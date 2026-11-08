@@ -269,6 +269,20 @@ int ceval(Cmd* cmd) {
     else
         printf("%d\n", v.value.integer);
 }
+else if (cmd->kind == C_READ) {
+    Value v = getVar(cmd->attr.read.var);
+
+    if (v.isReal) {
+        if (scanf("%lf", &v.value.real) != 1)
+            yyerror("Invalid real input!");
+    }
+    else {
+        if (scanf("%d", &v.value.integer) != 1)
+            yyerror("Invalid integer input!");
+    }
+
+    storeVar(cmd->attr.read.var, v);
+}
   else if (cmd->kind == C_DECL) {
     if (cmd->attr.decl.type == INTEGER_TYPE) {
         storeVar(cmd->attr.decl.var, make_integer(0));
