@@ -1,0 +1,101 @@
+
+// AST definitions
+#ifndef __ast_h__
+#define __ast_h__
+
+// AST for expressions
+struct _Expr {
+  enum { 
+    E_INTEGER,
+    E_OPERATION
+  } kind;
+  union { //separates between op and value
+    int value; // for integer values
+    struct { 
+      int operator; // PLUS, MINUS, etc 
+      struct _Expr* left;
+      struct _Expr* right;
+    } op; // for binary expressions
+  } attr;
+};
+
+// AST for boolean
+struct _BoolExpr {
+  enum {
+    BE_BOOLEAN, //True, False
+    BE_COMPARE, //EQ, NEQ, LT, GT, LE, GE
+    BE_GATES, //And, Or
+    BE_INNER //NOT
+  } kind;
+  union {
+    int value; // 1=True, 0=False
+    struct {
+      int operator; //EQ, NEQ, LT...
+      struct _Expr* left;
+      struct _Expr* right;
+    } comp;
+    struct {
+      int operator; // And, or
+      struct _BoolExpr* left;
+      struct _BoolExpr* right;
+    } gate;
+    struct _BoolExpr* inner; // Not
+  } attr;
+};
+
+struct _Cmd {
+  enum {
+    C_ASSIGN,
+    C_IFTHEN,
+    C_IFELSE,
+    C_WHILE,
+    C_COMMANDS
+  } kind;
+  union {
+    struct {
+      char* var;
+      Expr* value; //can be 1+1
+    } assign;
+    struct {
+      BoolExpr* cond;
+      struct _Cmd* thenCmd;
+    } ifthen;
+    struct {
+      BoolExpr* cond;
+      struct _Cmd* thenCmd;
+      struct _Cmd* elseCmd;
+    } ifelse;
+    struct {
+      BoolExpr* cond;
+      struct _Cmd* thenCmd;
+    } loop; //can be used in a for
+    struct {
+      struct _Cmd* left;
+      struct _Cmd* right;
+    } commands;
+  } attr;
+};
+
+typedef struct _Cmd Cmd;
+typedef struct _BoolExpr BoolExpr;
+typedef struct _Expr Expr; // Convenience typedef (?)
+
+// Constructor functions (see implementation in ast.c)
+Expr* ast_integer(int v);
+Expr* ast_operation(int operator, Expr* left, Expr* right);
+
+// AQUIIIIIIIIIIIIII Constructor functions (see implementation in ast.c)
+BoolExpr* ast_boolean(int v);
+BoolExpr* ast_compare(int operator, Expr* left, Expr* right);
+BoolExpr* ast_gates(int operator, BoolExpr* left, BoolExpr* right);
+BoolExpr* ast_inner(BoolExpr* inner);
+
+Cmd* ast_assign();
+Cmd* ast_if();
+Cmd* ast_ifelse();
+Cmd* ast_while();
+Cmd* ast_commands();
+
+void printExpr(Expr* e);
+void printBoolExpr(BoolExpr* b);
+#endif
