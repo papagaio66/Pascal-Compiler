@@ -1,5 +1,6 @@
 // AST constructor functions
 
+#include <string.h>
 #include <stdlib.h> // for malloc
 #include "ast.h" // AST header
 

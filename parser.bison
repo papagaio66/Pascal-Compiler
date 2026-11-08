@@ -135,7 +135,7 @@ cmd:
   }
   |
   IF bexpr THEN cmd %prec LOWER_THAN_ELSE { //then has no precedence, so that gives it 
-    $$ = ast_if($2, $4);                    //LOWER... precedence
+    $$ = ast_ifthen($2, $4);                    //LOWER... precedence
   }
   |
   IF bexpr THEN cmd ELSE cmd {
