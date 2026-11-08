@@ -193,6 +193,15 @@ static void printCmdAux(Cmd* cmd, int depth) {
     printf("|\n");
     printCmdAux(cmd->attr.commands.right, depth + 1);
   }
+  else if (cmd->kind == C_WRITE) {
+    printIndent(depth);
+    printf("WRITE\n");
+
+    printIndent(depth + 1);
+    printf("|\n");
+
+    printExprAux(cmd->attr.write.value, depth + 1);
+}
   return;
 }
 
