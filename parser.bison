@@ -15,7 +15,7 @@
 %left PLUS MINUS OR XOR
 %left TIMES DIV DIVI MOD AND
 %right NOT
-:w
+
 %token INTEGER REAL_TYPE
 %token LPAREN RPAREN
 
@@ -92,9 +92,10 @@ expr:
   expr MOD expr {
     $$ = ast_operation(MOD, $1, $3);
   }
-| ID {
+  | 
+  ID {
     $$ = ast_variable($1);
-}
+  }
 
 bexpr:
   TRUE {
