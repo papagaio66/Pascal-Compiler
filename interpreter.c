@@ -282,8 +282,8 @@ int main(int argc, char** argv) {
     }
   } //  yyin = stdin
   if (yyparse() == 0) {
-      printCmd(root);
-      printf("Result = %d\n", ceval(root));
+    printCmd(root);
+    ceval(root);
   }
   return 0;
 }

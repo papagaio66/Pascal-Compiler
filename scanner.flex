@@ -20,7 +20,7 @@ expon [Ee][+-]?{digits}
 real ({digits}"."{digits}({expon})?|{digits}{expon})
 
 %%
-[ \t]+ {  }
+[ \t\r]+ {  }
 
 "{"[^}]*"}" {
   for (char* p = yytext; *p; p++)
