@@ -54,19 +54,19 @@ struct _Cmd {
   union {
     struct {
       char* var;
-      Expr* value; //can be 1+1
+      struct _Expr* value; //can be 1+1
     } assign;
     struct {
-      BoolExpr* cond;
+      struct _BoolExpr* cond;
       struct _Cmd* thenCmd;
     } ifthen;
     struct {
-      BoolExpr* cond;
+      struct _BoolExpr* cond;
       struct _Cmd* thenCmd;
       struct _Cmd* elseCmd;
     } ifelse;
     struct {
-      BoolExpr* cond;
+      struct _BoolExpr* cond;
       struct _Cmd* thenCmd;
     } loop; //can be used in a for
     struct {
@@ -93,8 +93,8 @@ BoolExpr* ast_inner(BoolExpr* inner);
 Cmd* ast_assign();
 Cmd* ast_if();
 Cmd* ast_ifelse();
-Cmd* ast_while();
-Cmd* ast_commands();
+Cmd* ast_while(_BoolExpr* cond, _Cmd* thenCmd);
+Cmd* ast_commands(_Cmd* left, _Cmd* right);
 
 void printExpr(Expr* e);
 void printBoolExpr(BoolExpr* b);
