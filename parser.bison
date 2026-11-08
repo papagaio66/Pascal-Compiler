@@ -169,6 +169,10 @@ bexpr:
   FALSE {
     $$ = ast_boolean(0);
   }
+  | 
+  LPAREN bexpr RPAREN { 
+    $$ = $2; 
+  }
   |
   expr EQ expr {
     $$ = ast_compare(EQ, $1, $3);
@@ -234,13 +238,11 @@ cmd:
   WHILE bexpr DO cmd %prec LOWER_THAN_ELSE{
     $$ = ast_while($2,$4);
   }
-  |
-  P_BEGIN cmds P_END {
-    $$ = $2;
-  }| compound_statement
-    {
-        $$ = $1;
-    }
+  | 
+  compound_statement
+  {
+    $$ = $1;
+  }
 ;
 
 cmds:

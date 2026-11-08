@@ -2,6 +2,7 @@
 // HEADERS
 #include <stdlib.h>
 #include "parser.h"
+#include <string.h>
 
 // variables maintained by the lexical analyser
 int yyline = 1;
