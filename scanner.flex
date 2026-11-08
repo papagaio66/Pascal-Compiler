@@ -62,6 +62,9 @@ xor { return XOR; }
    "or else" { return ORELSE; }
    */
 
+"(" { return LPAREN; }
+")" { return RPAREN; }
+
 if { return IF; }
 then { return THEN; }
 else { return ELSE; }
@@ -69,6 +72,10 @@ while { return WHILE;}
 do { return DO; }
 begin { return P_BEGIN; }
 end { return P_END; }
+
+integer { return INTEGER_TYPE; }
+real    { return REAL_TYPE; }
+
 
 ":=" { return ASSIGN; }
 ";" { return SEMICOLON; }
