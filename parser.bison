@@ -11,10 +11,12 @@
 %left SEMICOLON
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
-%nonassoc EQ NEQ LT LE GT GE 
-%left PLUS MINUS OR XOR
-%left TIMES DIV DIVI MOD AND
+%left OR XOR
+%left AND
 %right NOT
+%nonassoc EQ NEQ LT LE GT GE 
+%left PLUS MINUS
+%left TIMES DIV DIVI MOD
 
 %token LPAREN RPAREN
 
