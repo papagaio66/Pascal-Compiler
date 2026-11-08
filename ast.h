@@ -91,6 +91,9 @@ struct _Cmd {
       struct _Cmd* left;
       struct _Cmd* right;
     } commands;
+    struct {
+      struct _Expr* value;
+    } write;
   } attr;
 };
 
