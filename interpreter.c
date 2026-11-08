@@ -92,6 +92,11 @@ int beval(BoolExpr* bexpr) {
   return result;
 }
 
+int ceval(Cmd* cmd) {
+  int result = 0;
+  return result;
+}
+
 int main(int argc, char** argv) {
   --argc; ++argv;
   if (argc != 0) {
