@@ -72,6 +72,10 @@ end { return P_END; }
 ":=" { return ASSIGN; }
 ";" { return SEMICOLON; }
 
+{digit}+({alpha}({alpha}|{digit})*) {
+	yyerror("unexpected character");
+}
+
 {alpha}({alpha}|{digit})* { 
    yylval.strValue = strdup(yytext); 
    return ID; 
