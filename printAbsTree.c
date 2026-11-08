@@ -32,7 +32,7 @@ static void printExprAux(Expr* expr, int depth) {
   }
   else if (expr->kind == E_INTEGER) {
     printIndent(depth+1);
-    printf("NUM\n");
+    printf("INTEGER\n");
     printIndent(depth+1);
     printf("|\n");
     printIndent(depth+1);
