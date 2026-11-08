@@ -98,6 +98,12 @@ real    { return REAL_TYPE; }
 ":=" { return ASSIGN; }
 ";" { return SEMICOLON; }
 
+
+
+write { return WRITE; }
+
+
+
 {digit}+({alpha}({alpha}|{digit})*) {
 	yyerror("unexpected character");
 }

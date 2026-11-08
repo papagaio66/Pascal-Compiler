@@ -62,7 +62,8 @@ struct _Cmd {
     C_IFTHEN,
     C_IFELSE,
     C_WHILE,
-    C_COMMANDS
+    C_COMMANDS,
+    C_WRITE
   } kind;
   union {
     struct {
@@ -129,6 +130,7 @@ Cmd* ast_ifthen(BoolExpr* cond, Cmd* thenCmd);
 Cmd* ast_ifelse(BoolExpr* cond, Cmd* thenCmd, Cmd* elseCmd);
 Cmd* ast_while(BoolExpr* cond, Cmd* thenCmd);
 Cmd* ast_commands(Cmd* left, Cmd* right);
+Cmd* ast_write(Expr* value);
 
 void printExpr(Expr* e);
 void printBoolExpr(BoolExpr* b);
