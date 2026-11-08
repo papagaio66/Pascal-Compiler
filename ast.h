@@ -9,7 +9,7 @@ struct _Expr {
     E_INTEGER,
     E_REAL,
     E_OPERATION,
-    E_VARIABLE
+    E_VARIABLE,
     E_UNARY
   } kind;
   union { //separates between op and value
