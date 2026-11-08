@@ -4,36 +4,86 @@
 
 Expr* root = NULL;
 
+
+Value make_integer(int n){
+	Value v;
+	v.isReal=0;
+	v.value.integer=n;
+	return v;
+}
+
+Value make_real(double n){
+	Value v;
+	v.isReal=1;
+	v.value.real=n;
+	return v;
+}
+
+
 int eval(Expr* expr) {
   int result = 0;
   if (expr == 0) {
     yyerror("Null expression!!");
   }
   else if (expr->kind == E_INTEGER) {
-    result = expr->attr.value; 
+    result = make_integer(expr->attr.value); 
+  } 
+  else if (expr->kind == E_REAL) {
+    result = make_real(expr->attr.value); 
   } 
   else if (expr->kind == E_OPERATION) {
-    int vLeft = eval(expr->attr.op.left);
-    int vRight = eval(expr->attr.op.right);
-    switch (expr->attr.op.operator) {
+    Value vLeft = eval(expr->attr.op.left);
+    Value vRight = eval(expr->attr.op.right);
+
+    int op=expr->attr.op.operator;
+
+
+    if(op==MOD){
+	    if(vLeft.isReal||vRight.isReal){
+		    yyerror("MOD requires integer operands!");
+	    }
+	    //nao tamos a chekar divs e mods por 0, acho q o fpc n faz isso (99% certeza)
+	    return make_integer(vLeft.value.integer%vRight.value.integer);
+    }
+    if(op==DIV){
+	    double a=vLeft.isReal ? vLeft.value.real : vLeft.value.integer;
+	    double b=vRight.isReal ? vRight.value.real : vRight.value.integer;
+	    //nao chekar div por 0 denovo
+	    return make_real(a/b);
+    }
+    if(vLeft.isReal||vRight.isReal){
+	    double a=vLeft.isReal ? vLeft.value.real : vLeft.value.integer;
+	    double b=vRight.isReal ? vRight.value.real : vRight.value.integer;
+	    switch(op){
+	      case PLUS: //ja veio com
+		result = make_real(a + b); 
+		break;
+	      case MINUS: //Até mod é novo
+		result = make_real(a - b);
+		break;
+	      case TIMES:
+		result = make_real(a * b);
+		break;
+	      default: yyerror("Unknown operator!");
+	    }
+    }
+    int a=vLeft.value.integer;
+    int b=vRight.value.integer;
+
+    switch(op){
       case PLUS: //ja veio com
-        result = vLeft + vRight; 
-        break;
+	result = make_integer(a + b); 
+	break;
       case MINUS: //Até mod é novo
-        result = vLeft - vRight;
-        break;
+	result = make_integer(a - b);
+	break;
       case TIMES:
-        result = vLeft * vRight;
-        break;
-      case DIV:
-        result = vLeft / vRight;
-        break;
-      case MOD:
-        result = vLeft % vRight;
-        break;
+	result = make_integer(a * b);
+	break;
       default: yyerror("Unknown operator!");
     }
   }
+  yyerror("Unknown expression type!");
   return result;
 }
 
@@ -46,30 +96,64 @@ int beval(BoolExpr* bexpr) {
     result = bexpr->attr.value;
   }
   else if (bexpr->kind == BE_COMPARE) {
-    int vLeft = eval(bexpr->attr.comp.left); //numeros entao expr
-    int vRight = eval(bexpr->attr.comp.right);
-    switch (bexpr->attr.comp.operator) {
+    Value vLeft = eval(bexpr->attr.comp.left); //numeros entao expr
+    Value vRight = eval(bexpr->attr.comp.right);
+
+    int op =bexpr->attr.comp.operator;
+
+    if(!left.isReal&&!right.isReal){
+	    int a=vLeft.value.integer;
+	    int b=vRight.value.integer;
+	switch(op){
       case EQ:
-        result = (vLeft == vRight); 
+        result = (a == b); 
         break;
       case NEQ:
-        result = (vLeft != vRight);
+        result = (a != b);
         break;
       case LT:
-        result = (vLeft < vRight);
+        result = (a < b);
         break;
       case LE:
-        result = (vLeft <= vRight);
+        result = (a <= b);
         break;
       case GT:
-        result = (vLeft > vRight);
+        result = (a > b);
         break;
       case GE:
-        result = (vLeft >= vRight);
+        result = (a >= b);
         break;
       default: yyerror("Unknown operator!");
     }
   }
+    else{
+	    double a=vLeft.isReal ? vLeft.value.real : vLeft.value.integer;
+	    double b=vRight.isReal ? vRight.value.real : vRight.value.integer;
+
+		switch(op){
+	      case EQ:
+		result = (a == b); 
+		break;
+	      case NEQ:
+		result = (a != b);
+		break;
+	      case LT:
+		result = (a < b);
+		break;
+	      case LE:
+		result = (a <= b);
+		break;
+	      case GT:
+		result = (a > b);
+		break;
+	      case GE:
+		result = (a >= b);
+		break;
+	      default: yyerror("Unknown operator!");
+	    }
+    }
+
+
   else if (bexpr->kind == BE_GATES) {
     int vLeft = beval(bexpr->attr.gate.left);
     int vRight = beval(bexpr->attr.gate.right);

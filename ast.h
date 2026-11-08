@@ -83,6 +83,19 @@ typedef struct _Cmd Cmd;
 typedef struct _BoolExpr BoolExpr;
 typedef struct _Expr Expr; // Convenience typedef (?)
 
+
+typedef struct {
+    int isReal;
+
+    union {
+        int integer;
+        double real;
+    } value;
+} Value;
+
+
+Value eval(Expr* expr);
+
 // Constructor functions (see implementation in ast.c)
 Expr* ast_integer(int v);
 Expr* ast_real(double v);
