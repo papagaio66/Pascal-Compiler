@@ -7,10 +7,13 @@
 struct _Expr {
   enum { 
     E_INTEGER,
+    E_REAL,
     E_OPERATION
   } kind;
   union { //separates between op and value
     int value; // for integer values
+    int real; //  for   real  values
+
     struct { 
       int operator; // PLUS, MINUS, etc 
       struct _Expr* left;
@@ -82,6 +85,7 @@ typedef struct _Expr Expr; // Convenience typedef (?)
 
 // Constructor functions (see implementation in ast.c)
 Expr* ast_integer(int v);
+Expr* ast_real(double v);
 Expr* ast_operation(int operator, Expr* left, Expr* right);
 
 // AQUIIIIIIIIIIIIII Constructor functions (see implementation in ast.c)

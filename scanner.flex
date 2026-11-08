@@ -26,7 +26,7 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 
 {real} {
 	yylval.realValue=atof(yytext);
-	real REAL;
+	return REAL;
 }
 
 

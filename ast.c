@@ -10,6 +10,13 @@ Expr* ast_integer(int v) {
   return node;
 }
 
+Expr* ast_real(double v) {
+    Expr* node = (Expr*) malloc(sizeof(Expr));
+    node->kind = E_REAL;
+    node->attr.real = v;
+    return node;
+}
+
 Expr* ast_operation
 (int operator, Expr* left, Expr* right) {
   Expr* node = (Expr*) malloc(sizeof(Expr));
