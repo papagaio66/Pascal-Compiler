@@ -20,37 +20,96 @@ Value make_real(double n){
 	return v;
 }
 
-#define MAX_VARS 100 //value
-static char* varNames[MAX_VARS];
-static Value varValues[MAX_VARS];      // was: int
-static int   nVars = 0;
+#define MAX_VARS 100
 
-static void storeVar(const char* name, Value value) {   // was: int value
-  for (int i = 0; i < nVars; i++) {
-    if (strcmp(varNames[i], name) == 0) {
-      varValues[i] = value;
-      return;
+static char* varNames[MAX_VARS];
+static Value varValues[MAX_VARS];
+static int varTypes[MAX_VARS];
+static int nVars = 0;
+
+
+static int findVar(const char* name) {
+    for (int i = 0; i < nVars; i++) {
+        if (strcmp(varNames[i], name) == 0)
+            return i;
     }
-  }
-  if (nVars >= MAX_VARS) {
-    yyerror("Too many variables!");
-    return;
+
+    return -1;
 }
-  varNames[nVars] = strdup(name);
-  varValues[nVars] = value;
-  nVars++;
+
+
+static void declareVar(const char* name, int type) {
+
+    if (findVar(name) != -1) {
+        yyerror("Variable already declared!");
+        return;
+    }
+
+    if (nVars >= MAX_VARS) {
+        yyerror("Too many variables!");
+        return;
+    }
+
+    varNames[nVars] = strdup(name);
+    varTypes[nVars] = type;
+
+    if (type == INTEGER_TYPE)
+        varValues[nVars] = make_integer(0);
+    else if (type == REAL_TYPE)
+        varValues[nVars] = make_real(0.0);
+    else {
+        yyerror("Unknown variable type!");
+        free(varNames[nVars]);
+        return;
+    }
+
+    nVars++;
 }
+
+
+static void storeVar(const char* name, Value value) {
+
+    int index = findVar(name);
+
+    if (index == -1) {
+        yyerror("Variable not declared!");
+        return;
+    }
+
+    /* Integer variable */
+    if (varTypes[index] == INTEGER_TYPE) {
+
+        if (value.isReal) {
+            yyerror("Cannot assign real value to integer variable!");
+            return;
+        }
+
+        varValues[index] = value;
+    }
+
+    /* Real variable */
+    else if (varTypes[index] == REAL_TYPE) {
+
+        if (!value.isReal)
+            value = make_real((double)value.value.integer);
+
+        varValues[index] = value;
+    }
+}
+
 
 static Value getVar(const char* name) {
-    for (int i = 0; i < nVars; i++) {
-        if (strcmp(varNames[i], name) == 0) {
-            return varValues[i];
-        }
+
+    int index = findVar(name);
+
+    if (index == -1) {
+        yyerror("Variable not declared!");
+        return make_integer(0);
     }
 
-    yyerror("Variable not found!");
-    return make_integer(0);
+    return varValues[index];
 }
+
 
 Value eval(Expr* expr) {
   Value result = make_integer(0);
@@ -283,14 +342,12 @@ else if (cmd->kind == C_READ) {
 
     storeVar(cmd->attr.read.var, v);
 }
-  else if (cmd->kind == C_DECL) {
-    if (cmd->attr.decl.type == INTEGER_TYPE) {
-        storeVar(cmd->attr.decl.var, make_integer(0));
-    }
-    else if (cmd->attr.decl.type == REAL_TYPE) {
-        storeVar(cmd->attr.decl.var, make_real(0.0));
-    }
-   }
+else if (cmd->kind == C_DECL) {
+    declareVar(
+        cmd->attr.decl.var,
+        cmd->attr.decl.type
+    );
+}
   return 0;
 }
 
@@ -306,7 +363,7 @@ int main(int argc, char** argv) {
   if (yyparse() == 0) {
     printCmd(root);
     // codigo antigo para debug
-    //ceval(root);
+    ceval(root);
   }
   return 0;
 }
