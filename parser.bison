@@ -1,9 +1,14 @@
 // Tokens
 %token INT REAL
 %token PLUS MINUS TIMES DIV MOD
-%token  TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT 
+%token TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT
+%token ASSIGN IF THEN ELSE WHILE DO P_BEGIN P_END SEMICOLON
+%token <strValue> ID
 
 // Operator associativity & precedence
+%left SEMICOLON
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 %nonassoc EQ NEQ LT LE GT GE 
 %left PLUS MINUS OR XOR
 %left TIMES DIV MOD AND
@@ -18,12 +23,15 @@
   double realValue;
   Expr* exprValue; 
   BoolExpr* boolValue;
+  Cmd* cmdValue;
+  char* strValue;
 }
 
 %type <intValue> INT
 %type <realValue> REAL
 %type <exprValue> expr
 %type <boolValue> bexpr
+%type <cmdValue> cmd
 
 // Use "%code requires" to make declarations go
 // into both parser.c and parser.h
@@ -37,11 +45,11 @@ extern int yyline;
 extern char* yytext;
 extern FILE* yyin;
 extern void yyerror(const char* msg);
-extern Expr* root;
+extern Cmd* root;
 }
 
 %%
-program: expr { root = $1; }
+program: cmd { root = $1; }
 
 expr: 
   INT { 
@@ -120,7 +128,31 @@ bexpr:
   NOT bexpr {
     $$ = ast_inner($2);
   }
-  ;
+  
+cmd:
+  ID ASSIGN expr {
+    $$ = ast_assign($1, $3);
+  }
+  |
+  IF bexpr THEN cmd %prec LOWER_THAN_ELSE { //then has no precedence, so that gives it 
+    $$ = ast_if($2, $4);                    //LOWER... precedence
+  }
+  |
+  IF bexpr THEN cmd ELSE cmd {
+    $$ = ast_ifelse($2, $4, $6);
+  }
+  |
+  WHILE bexpr DO cmd %prec LOWER_THAN_ELSE{
+    $$ = ast_while($2,$4);
+  }
+  |
+  P_BEGIN cmd P_END {
+    $$ = $2;
+  }
+  |
+  cmd SEMICOLON cmd {
+    $$ = ast_commands($1, $3);
+  };
 
 %%
 

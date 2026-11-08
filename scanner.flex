@@ -61,6 +61,21 @@ xor { return XOR; }
    "or else" { return ORELSE; }
    */
 
+if { return IF; }
+then { return THEN; }
+else { return ELSE; }
+while { return WHILE;}
+do { return DO; }
+begin { return P_BEGIN; }
+end { return P_END; }
+
+":=" { return ASSIGN; }
+";" { return SEMICOLON; }
+
+{alpha}({alpha}|{digit})* { 
+   yylval.strValue = strdup(yytext); 
+   return ID; 
+   }
+
 .  { yyerror("unexpected character"); }
 %%
-
