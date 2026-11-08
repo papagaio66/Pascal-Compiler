@@ -26,7 +26,7 @@ struct _Expr {
 	    int operator;
 	    struct _Expr* operand;
     } unary;
-	
+
     char* variable;
   } attr;
 };
@@ -37,7 +37,8 @@ struct _BoolExpr {
     BE_BOOLEAN, //True, False
     BE_COMPARE, //EQ, NEQ, LT, GT, LE, GE
     BE_GATES, //And, Or
-    BE_INNER //NOT
+    BE_INNER, //NOT
+    BE_VARIABLE //x:=true
   } kind;
   union {
     int value; // 1=True, 0=False
@@ -52,6 +53,7 @@ struct _BoolExpr {
       struct _BoolExpr* right;
     } gate;
     struct _BoolExpr* inner; // Not
+    char* variable;
   } attr;
 };
 
@@ -64,7 +66,8 @@ struct _Cmd {
     C_WHILE,
     C_COMMANDS,
     C_WRITE,
-    C_READ
+    C_READ,
+    C_BOOLASSIGN
   } kind;
   union {
     struct {
@@ -96,8 +99,12 @@ struct _Cmd {
       struct _Expr* value;
     } write;
     struct {
-	char* var;
+	    char* var;
     } read;
+    struct {
+      char* var;
+      struct _BoolExpr* value;
+    } boolassign;
   } attr;
 };
 
@@ -130,8 +137,10 @@ BoolExpr* ast_boolean(int v);
 BoolExpr* ast_compare(int operator, Expr* left, Expr* right);
 BoolExpr* ast_gates(int operator, BoolExpr* left, BoolExpr* right);
 BoolExpr* ast_inner(BoolExpr* inner);
+BoolExpr* ast_boolvar(char* name);
 
 Cmd* ast_assign(char* var, Expr* value);
+Cmd* ast_boolassign(char* var, BoolExpr* value);
 Cmd* ast_declare(int type,char* var);
 Cmd* ast_ifthen(BoolExpr* cond, Cmd* thenCmd);
 Cmd* ast_ifelse(BoolExpr* cond, Cmd* thenCmd, Cmd* elseCmd);

@@ -1,9 +1,9 @@
 // Tokens
 %token INT REAL
 %token PLUS MINUS TIMES DIV DIVI MOD
-%token TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT
+%token TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT BOOLEAN_TYPE
 %token ASSIGN IF THEN ELSE WHILE DO P_BEGIN P_END SEMICOLON COMMA
-%token <strValue> ID
+%token <strValue> ID BOOLID
 
 %token INTEGER_TYPE REAL_TYPE
 
@@ -59,6 +59,7 @@ static void setDeclType(Cmd* c, int type);
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include <string.h>
 
 extern int yylex();
 extern int yyline;
@@ -66,6 +67,7 @@ extern char* yytext;
 extern FILE* yyin;
 extern void yyerror(const char* msg);
 extern Cmd* root;
+extern int isBoolVar(const char*);
 }
 
 %%
@@ -131,6 +133,10 @@ type:
   | 
   REAL_TYPE    { 
     $$ = REAL_TYPE; 
+  }
+  |
+  BOOLEAN_TYPE {
+    $$ = BOOLEAN_TYPE;
   }
 ;
 
@@ -206,7 +212,11 @@ bexpr:
   FALSE {
     $$ = ast_boolean(0);
   }
-  | 
+  |
+  BOOLID {
+    $$ = ast_boolvar($1);
+  }
+  |
   LPAREN bexpr RPAREN { 
     $$ = $2; 
   }
@@ -252,16 +262,20 @@ bexpr:
   }
   
 cmd:
-    INTEGER_TYPE ID {
-        $$ = ast_declare(INTEGER_TYPE, $2);
-    }
-    |
-    REAL_TYPE ID {
-        $$ = ast_declare(REAL_TYPE, $2);
-    }
-    |
+  INTEGER_TYPE ID {
+    $$ = ast_declare(INTEGER_TYPE, $2);
+  }
+  |
+  REAL_TYPE ID {
+    $$ = ast_declare(REAL_TYPE, $2);
+  }
+  |
   ID ASSIGN expr {
     $$ = ast_assign($1, $3);
+  }
+  |
+  BOOLID ASSIGN bexpr {
+    $$ = ast_boolassign($1, $3);
   }
   |
   IF bexpr THEN cmd %prec LOWER_THAN_ELSE { //then has no precedence, so that gives it 
@@ -305,12 +319,30 @@ cmds:
 
 %%
 
+// Names of the variables declared as boolean. The scanner asks isBoolVar()
+// so it can return BOOLID instead of ID.
+#define MAX_BOOL_VARS 100
+static char* boolVars[MAX_BOOL_VARS];
+static int   nBoolVars = 0;
+
+int isBoolVar(const char* name) {
+  for (int i = 0; i < nBoolVars; i++)
+    if (strcmp(boolVars[i], name) == 0) return 1;
+  return 0;
+}
+
+static void declareBoolVar(const char* name) {
+  if (isBoolVar(name) || nBoolVars >= MAX_BOOL_VARS) return;
+  boolVars[nBoolVars++] = strdup(name);
+}
+
 static void setDeclType(Cmd* c, int type) {
   if (c->kind == C_COMMANDS) {
     setDeclType(c->attr.commands.left, type);
     setDeclType(c->attr.commands.right, type);
   } else {
     c->attr.decl.type = type;
+    if (type == BOOLEAN_TYPE) declareBoolVar(c->attr.decl.var);
   }
 }
 

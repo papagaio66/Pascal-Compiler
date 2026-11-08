@@ -100,7 +100,7 @@ real    { return REAL_TYPE; }
 write { return WRITE; }
 read { return READ; }
 
-
+boolean { return BOOLEAN_TYPE; }
 
 {digit}+({alpha}({alpha}|{digit})*) {
 	yyerror("unexpected character");
@@ -108,8 +108,8 @@ read { return READ; }
 
 {alpha}({alpha}|{digit})* { 
    yylval.strValue = strdup(yytext); 
-   return ID; 
-   }
+   return isBoolVar(yytext) ? BOOLID : ID; 
+}
 
 .  { yyerror("unexpected character"); }
 %%

@@ -106,10 +106,14 @@ static void printBoolExprAux(BoolExpr* b, const char* prefix, int last) {
       printBoolExprAux(b->attr.gate.left, child, 0);
       printBoolExprAux(b->attr.gate.right, child, 1);
       break;
- 
+
     case BE_INNER:
       emit(prefix, last, "NOT", child);
       printBoolExprAux(b->attr.inner, child, 1);
+      break;
+
+    case BE_VARIABLE:
+      emit(prefix, last, b->attr.variable, child);
       break;
   }
 }
@@ -134,8 +138,10 @@ static void collectFlat(Cmd* c, Cmd** list, int* n) {
 static void printCmdAux(Cmd* c, const char* prefix, int last);
  
 static void declLabel(Cmd* c, char* label, size_t size) {
-  snprintf(label, size, "%s : %s", c->attr.decl.var,
-           c->attr.decl.type == INTEGER_TYPE ? "INTEGER" : "REAL");
+  const char* type = "REAL";
+  if (c->attr.decl.type == INTEGER_TYPE) type = "INTEGER";
+  else if (c->attr.decl.type == BOOLEAN_TYPE) type = "BOOLEAN";
+  snprintf(label, size, "%s : %s", c->attr.decl.var, type);
 }
  
 // Prints a node named `name` whose children are the flattened statements of c.
@@ -169,14 +175,19 @@ static void printCmdAux(Cmd* c, const char* prefix, int last) {
  
   switch (c->kind) {
     case C_ASSIGN:
-      emit(prefix, last, "ASSIGN", child);
-      {
+      emit(prefix, last, "ASSIGN", child); {
         char child2[PFX];
         emit(child, 0, c->attr.assign.var, child2);
       }
       printExprAux(c->attr.assign.value, child, 1);
       break;
- 
+    case C_BOOLASSIGN:
+      emit(prefix, last, "ASSIGN", child); {
+        char child2[PFX];
+        emit(child, 0, c->attr.boolassign.var, child2);
+      }
+      printBoolExprAux(c->attr.boolassign.value, child, 1);
+      break;
     case C_DECL:
       declLabel(c, label, sizeof label);
       emit(prefix, last, label, child);

@@ -79,6 +79,16 @@ BoolExpr* ast_inner
   return node;
 }
 
+BoolExpr* ast_boolvar
+(char* name) {
+    BoolExpr* node = malloc(sizeof(BoolExpr));
+    node->kind = BE_VARIABLE;
+    node->attr.variable = strdup(name);
+    return node;
+}
+
+
+
 Cmd* ast_assign
 (char* var, Expr* value) {
   Cmd* node = (Cmd*) malloc(sizeof(Cmd));
@@ -137,5 +147,13 @@ Cmd* ast_read(char* var) {
     Cmd* node = malloc(sizeof(Cmd));
     node->kind = C_READ;
     node->attr.read.var = strdup(var);
+    return node;
+}
+Cmd* ast_boolassign
+(char* var, BoolExpr* value) {
+    Cmd* node = malloc(sizeof(Cmd));
+    node->kind = C_BOOLASSIGN;
+    node->attr.boolassign.var = strdup(var);
+    node->attr.boolassign.value = value;
     return node;
 }
