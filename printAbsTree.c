@@ -101,6 +101,19 @@ static void printBoolExprAux(BoolExpr* bexpr, int depth) {
   return;
 }
 
+static void printCmdAux(Cmd* cmd, int depth) {
+  if (cmd == 0) {
+    yyerror("Null expression!!");
+  }
+  else if (cmd->kind==C_ASSIGN) {
+    printIndent(depth);
+    prinf()
+  }
+}
+
+void printCmd(Cmd* c) {
+  printCmdAux(c, 0);
+}
 void printBoolExpr(BoolExpr* b) {
   printBoolExprAux(b, 0);
 }

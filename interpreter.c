@@ -2,7 +2,7 @@
 #include "ast.h"
 #include "parser.h"
 
-Expr* root = NULL;
+Cmd* root = NULL;
 
 
 Value make_integer(int n){
@@ -191,8 +191,8 @@ int main(int argc, char** argv) {
     }
   } //  yyin = stdin
   if (yyparse() == 0) {
-      printExpr(root);
-      printf("Result = %d\n", eval(root));
+      printCmd(root);
+      printf("Result = %d\n", ceval(root));
   }
   return 0;
 }
