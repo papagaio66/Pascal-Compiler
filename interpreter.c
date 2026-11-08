@@ -32,9 +32,24 @@ static void storeVar(const char* name, Value value) {   // was: int value
       return;
     }
   }
+  if (nVars >= MAX_VARS) {
+    yyerror("Too many variables!");
+    return;
+}
   varNames[nVars] = strdup(name);
   varValues[nVars] = value;
   nVars++;
+}
+
+static Value getVar(const char* name) {
+    for (int i = 0; i < nVars; i++) {
+        if (strcmp(varNames[i], name) == 0) {
+            return varValues[i];
+        }
+    }
+
+    yyerror("Variable not found!");
+    return make_integer(0);
 }
 
 Value eval(Expr* expr) {
@@ -48,6 +63,9 @@ Value eval(Expr* expr) {
   else if (expr->kind == E_REAL) {
     result = make_real(expr->attr.value); 
   } 
+  else if (expr->kind==E_VARIABLE){
+	  result=getVar(expr->attr.variable);
+  }
   else if (expr->kind == E_OPERATION) {
     Value vLeft = eval(expr->attr.op.left);
     Value vRight = eval(expr->attr.op.right);
@@ -109,7 +127,7 @@ Value eval(Expr* expr) {
       default: yyerror("Unknown operator!");
     }
   }
-  yyerror("Unknown expression type!");
+  //yyerror("Unknown expression type!");
   return result;
 }
 
