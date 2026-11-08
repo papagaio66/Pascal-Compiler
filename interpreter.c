@@ -52,6 +52,14 @@ Value eval(Expr* expr) {
 	    //nao chekar div por 0 denovo
 	    return make_real(a/b);
     }
+    if(op==DIVI){
+	    if(vLeft.isReal||vRight.isReal){
+		    yyerror("MOD requires integer operands!");
+		    return make_integer(0);
+	    }
+	    //nao tamos a chekar divs e mods por 0, acho q o fpc n faz isso (99% certeza)
+	    return make_integer(vLeft.value.integer/vRight.value.integer);
+    }
     if(vLeft.isReal||vRight.isReal){
 	    double a=vLeft.isReal ? vLeft.value.real : vLeft.value.integer;
 	    double b=vRight.isReal ? vRight.value.real : vRight.value.integer;

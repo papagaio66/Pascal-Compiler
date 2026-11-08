@@ -1,6 +1,6 @@
 // Tokens
 %token INT REAL
-%token PLUS MINUS TIMES DIV MOD
+%token PLUS MINUS TIMES DIV DIVI MOD
 %token TRUE FALSE EQ NEQ LT LE GT GE AND OR XOR NOT
 %token ASSIGN IF THEN ELSE WHILE DO P_BEGIN P_END SEMICOLON
 %token <strValue> ID
@@ -11,7 +11,7 @@
 %nonassoc ELSE
 %nonassoc EQ NEQ LT LE GT GE 
 %left PLUS MINUS OR XOR
-%left TIMES DIV MOD AND
+%left TIMES DIV DIVI MOD AND
 %right NOT
 
 // Root-level grammar symbol
@@ -74,6 +74,10 @@ expr:
   |
   expr DIV expr {
     $$ = ast_operation(DIV, $1, $3);
+  }
+  |
+  expr DIVI expr {
+    $$ = ast_operation(DIVI, $1, $3);
   }
   |
   expr MOD expr {

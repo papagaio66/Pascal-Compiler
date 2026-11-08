@@ -40,6 +40,7 @@ real ({digits}"."{digits}({expon})?|{digits}{expon})
 "*" { return TIMES; }
 "/" { return DIV; }
 "%" { return MOD; }
+[dD][iI][vV] { return DIVI; }
 
 true { return TRUE; }
 false { return FALSE; }
