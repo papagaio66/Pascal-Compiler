@@ -90,11 +90,11 @@ BoolExpr* ast_compare(int operator, Expr* left, Expr* right);
 BoolExpr* ast_gates(int operator, BoolExpr* left, BoolExpr* right);
 BoolExpr* ast_inner(BoolExpr* inner);
 
-Cmd* ast_assign(char* var, _Expr* value);
-Cmd* ast_ifthen(_BoolExpr* cond, _Cmd* thenCmd);
-Cmd* ast_ifelse(_BoolExpr* cond, _Cmd* thenCmd, _Cmd* elseCmd);
-Cmd* ast_while(_BoolExpr* cond, _Cmd* thenCmd);
-Cmd* ast_commands(_Cmd* left, _Cmd* right);
+Cmd* ast_assign(char* var, Expr* value);
+Cmd* ast_ifthen(BoolExpr* cond, Cmd* thenCmd);
+Cmd* ast_ifelse(BoolExpr* cond, Cmd* thenCmd, Cmd* elseCmd);
+Cmd* ast_while(BoolExpr* cond, Cmd* thenCmd);
+Cmd* ast_commands(Cmd* left, Cmd* right);
 
 void printExpr(Expr* e);
 void printBoolExpr(BoolExpr* b);
