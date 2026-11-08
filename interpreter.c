@@ -305,7 +305,8 @@ int main(int argc, char** argv) {
   } //  yyin = stdin
   if (yyparse() == 0) {
     printCmd(root);
-    ceval(root);
+    // codigo antigo para debug
+    //ceval(root);
   }
   return 0;
 }
