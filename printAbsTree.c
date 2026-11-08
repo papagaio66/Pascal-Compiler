@@ -38,6 +38,14 @@ static void printExprAux(Expr* expr, int depth) {
     printIndent(depth+1);
     printf("%d\n",expr->attr.value);
   }
+  else if (expr->kind==E_REAK){
+	  printIndent(depth+1);
+	  printf("REAL\n");
+	  printIndent(depth+1);
+	  printf("|\n");
+	  printIndent(depth+1);
+	  printf("%g\n",expr->attr.value);
+  }
   else if (expr->kind == E_OPERATION) { //claude
     printIndent(depth);
     printf("%s\n", opName(expr->attr.op.operator));
