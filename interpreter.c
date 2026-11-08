@@ -20,8 +20,8 @@ Value make_real(double n){
 }
 
 
-int eval(Expr* expr) {
-  int result = 0;
+Value eval(Expr* expr) {
+  Value result = make_integer(0);
   if (expr == 0) {
     yyerror("Null expression!!");
   }
@@ -41,6 +41,7 @@ int eval(Expr* expr) {
     if(op==MOD){
 	    if(vLeft.isReal||vRight.isReal){
 		    yyerror("MOD requires integer operands!");
+		    return make_integer(0);
 	    }
 	    //nao tamos a chekar divs e mods por 0, acho q o fpc n faz isso (99% certeza)
 	    return make_integer(vLeft.value.integer%vRight.value.integer);
